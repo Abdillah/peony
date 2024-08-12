@@ -11,10 +11,10 @@
   "license": "ISC",
   "dependencies": {
     "@vue/reactivity": "^3.4.37",
-    "alpinejs": "^3.14.1",
-    "esbuild": "^0.23.0"
+    "alpinejs": "^3.14.1"
   },
   "devDependencies": {
-    "@web/dev-server": "^0.4.6"
+    "@web/dev-server": "^0.4.6",
+    "esbuild": "^0.23.0"
   }
 }

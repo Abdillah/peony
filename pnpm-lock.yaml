@@ -14,13 +14,13 @@ importers:
       alpinejs:
         specifier: ^3.14.1
         version: 3.14.1
-      esbuild:
-        specifier: ^0.23.0
-        version: 0.23.0
     devDependencies:
       '@web/dev-server':
         specifier: ^0.4.6
         version: 0.4.6
+      esbuild:
+        specifier: ^0.23.0
+        version: 0.23.0
 
 packages:
 
