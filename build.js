@@ -1,13 +1,21 @@
+const fs = require('node:fs');
+
 async function build(options) {
     options.define || (options.define = {})
 
     const ctx = await require('esbuild').context({
         logLevel: process.argv.includes('--watch') ? 'info' : 'warning',
+        write: false,
         ...options,
     });
 
     const result = await ctx.rebuild();
-    console.log(`✨ Build '${options.outfile}' succeeded.`);
+    if (result.outputFiles) {
+        for (const f of result.outputFiles) {
+            fs.writeFileSync(f.path, f.contents);
+        }
+        console.log(`✨ Build '${options.outfile}' succeeded.`);
+    }
 
     if (process.argv.includes('--watch')) {
         // Enable watch
@@ -41,6 +49,8 @@ for (const k in modules) {
         format: 'esm',
         bundle: true,
         external: externals,
+        minify: isProduction,
+        sourcemap: !isProduction,
         outfile: `mod/${k}/index${isProduction ? '.min' : ''}.js`,
         entryPoints: module.entryPoints.map((ep) => `node_modules/${k}/${ep}`),
     }));
@@ -48,4 +58,8 @@ for (const k in modules) {
 }
 
 Promise.all(promises)
-.then(() => process.exit(0))
+.then((results) => {
+    results.forEach((ctx) => ctx.dispose());
+    console.log('👋🏻 Bye..')
+    process.exit(0);
+})
