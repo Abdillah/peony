@@ -1,4 +1,4 @@
-const fs = require('node:fs');
+const fs = require('node:fs').promises;
 
 async function build(options) {
     options.define || (options.define = {})
@@ -11,10 +11,10 @@ async function build(options) {
 
     const result = await ctx.rebuild();
     if (result.outputFiles) {
-        for (const f of result.outputFiles) {
-            fs.writeFileSync(f.path, f.contents);
-        }
-        console.log(`✨ Build '${options.outfile}' succeeded.`);
+        await Promise.all(result.outputFiles.map((f) => fs.writeFile(f.path, f.contents)))
+        .then(() => {
+            console.log(`✨ Build '${options.outfile}' succeeded.`)
+        });
     }
 
     if (process.argv.includes('--watch')) {
@@ -61,5 +61,4 @@ Promise.all(promises)
 .then((results) => {
     results.forEach((ctx) => ctx.dispose());
     console.log('👋🏻 Bye..')
-    process.exit(0);
 })
